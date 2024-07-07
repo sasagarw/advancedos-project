@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tods-app
+  namespace: tods-app-ns
+  labels:
+    app: tods-app
+    env: dev
+    region: usw2
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: tods-app
+  template:
+    metadata:
+      labels:
+        app: tods-app
+        env: dev
+        region: usw2
+    spec:
+      containers:
+        - name: app
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          image: docker.io/sashank058/tods-app:latest
+          imagePullPolicy: Always
+          env:
+            - name: ENDPOINT
+              value: "prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local"
+            - name: PORT
+              value: "9090"
+            - name: GOROUTINES
+              value: "5"
+            - name: START_TIME
+              value: '1713753000'
+            - name: END_TIME
+              value: '1713839400'
+          ports:
+            - name: app
+              containerPort: 8080
+              protocol: TCP
+            - name: metrics
+              containerPort: 8081
+              protocol: TCP
+      restartPolicy: Always

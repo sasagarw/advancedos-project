@@ -1,0 +1,33 @@
+grafana:
+  adminPassword: admin 
+   
+prometheus:
+  thanosService:
+    enabled: true
+   
+  thanosServiceMonitor:
+    enabled: true
+    interval: 5s
+   
+  prometheusSpec:
+    thanos:
+      blockSize: 30m
+      image: quay.io/thanos/thanos:v0.34.1
+      objectStorageConfig:
+        existingSecret:
+          key: thanos.yaml
+          name: thanos-objstore-config
+   
+prometheusOperator:
+  thanosImage:
+    repository: quay.io/thanos/thanos
+    version: v0.34.1
+    tag: v0.34.1
+   
+kubelet:
+  enabled: true
+  namespace: kube-system
+  serviceMonitor:
+    https: true
+    cAdvisor: true
+    probes: true
